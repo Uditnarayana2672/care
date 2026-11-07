@@ -43,7 +43,9 @@ log = logging.getLogger("seed")
 
 
 def seed_dir() -> Path:
-    for c in (Path(__file__).resolve().parents[4] / "seed", Path("/seed")):
+    # repo checkout: <root>/apps/api/app/seed/load.py -> <root>/seed; docker: mounted at /seed
+    candidates = [p / "seed" for p in Path(__file__).resolve().parents] + [Path("/seed")]
+    for c in candidates:
         if (c / "patients.json").exists():
             return c
     raise FileNotFoundError("seed directory not found")

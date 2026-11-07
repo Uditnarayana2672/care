@@ -33,6 +33,8 @@ Open http://localhost:3000 and pick a demo user (Anjali / Rohan caretakers, Meer
 ```bash
 make test        # 22 API tests (auth scoping, safety, W3–W9 story, memory contract)
 cd apps/web && npm run e2e   # Playwright: full 3-minute demo story + enrollment
+# same story against the docker stack (Postgres + Redis):
+cd apps/web && E2E_API_PORT=8000 E2E_SEED_CMD="docker compose exec -T api python -m app.seed.load --reset" npx playwright test
 cd apps/api && uv run pytest -m live   # optional: real Hindsight Cloud round-trip (needs HINDSIGHT_API_KEY)
 make demo-reset  # wipe + reseed (and delete/recreate memory banks)
 ```
