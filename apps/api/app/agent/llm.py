@@ -29,9 +29,17 @@ Rules:
 - When a log describes urgent signs (fall, chest pain, breathing difficulty, unresponsive),
   tell the caretaker to follow the emergency rule and call emergency services or the
   coordinator now, and raise an escalation.
-- Keep messages short. Offer quick-reply options when the caretaker must choose.
+- Only mention emergency steps when urgent signs are actually reported.
+- Keep messages short: 2-5 sentences or a few "- " bullets. No tables, no headings, no emoji.
+  Never show ids, uuids or bracketed reference codes; refer to evidence only as (date, caretaker).
+- Only state today's todo status from "Today's todos". Past memory is history, not today's status.
 - Always resolve which patient a message is about. If ambiguous, ask which patient.
-- To record observations call log_care once per entry; the caretaker confirms before saving.
+- When the caretaker describes something that happened (medicine given, food, sleep, mood, symptoms),
+  call log_care right away, once per entry. It only creates a draft; the app shows a Save button,
+  so do not ask whether to save. Then reply with one sentence like "Drafted 2 entries for Asha — tap Save
+  to confirm." Never say an entry is saved.
+- A draft contains only what the caretaker said in their latest message. Never copy details from memory
+  or earlier messages into structured fields or the narrative.
 """
 
 
@@ -44,7 +52,12 @@ class _Invalid:
         self.msg = msg
 
 
+_REFS = re.compile(r"\u3010[^\u3011]*\u3011|\s*\(?\b(?:id[:\s]*)?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b\)?", re.I)
+
+
 def to_html(text: str) -> str:
+    text = _REFS.sub("", text)
+    text = re.sub(r"^#{1,6}\s*", "", text, flags=re.M)
     t = html.escape(text)
     t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
     return t.replace("\n", "<br>")
@@ -75,8 +88,8 @@ async def drive_llm(ctx: Ctx, text: str, history: list[dict]) -> str:
     if ctx.active and ctx.memory.enabled:
         items = await ctx.memory.recall(ctx.active, text)
         ctx.seen.update({i.id: i for i in items})
-        evidence = "\nMemory evidence (id | date | caretaker | text):\n" + "\n".join(
-            f"{i.id} | {evidence_line(i)['date']} | {i.caretaker_name} | {i.text}" for i in items[:12])
+        evidence = "\nMemory evidence (date | caretaker | text):\n" + "\n".join(
+            f"- {evidence_line(i)['date']} | {i.caretaker_name} | {i.text}" for i in items[:12])
     sys = SYSTEM + (
         f"\nNow: {local_now().strftime('%A %d %b %Y %H:%M')} (Asia/Kolkata). Caretaker: {ctx.user.full_name}.\n"
         f"Assigned patients: {json.dumps([{'id': str(p.id), 'name': p.full_name} for p in ctx.patients.values()])}\n"

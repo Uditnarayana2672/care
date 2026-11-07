@@ -109,6 +109,14 @@ async def extract_entries(ctx: Ctx, p: Patient, text: str) -> list[dict]:
 
 
 def _entry_row(e: dict) -> tuple[str, str]:
+    """Pretty row for the draft card. LLM drafts may omit structured keys → fall back to the narrative."""
+    try:
+        return _entry_row_structured(e)
+    except (KeyError, TypeError, AttributeError, ValueError):
+        return e["category"].capitalize(), e.get("narrative") or "—"
+
+
+def _entry_row_structured(e: dict) -> tuple[str, str]:
     s, c = e["structured"], e["category"]
     if c == "medication":
         t = f"{s['medication_name']} · {s['status']} {aware(e['observed_at']).astimezone(get_settings().tz).strftime('%-I:%M %p') if hasattr(e['observed_at'], 'strftime') else ''}"
@@ -120,6 +128,13 @@ def _entry_row(e: dict) -> tuple[str, str]:
     if c == "mood":
         return "Mood", f"{s['mood'].capitalize()}{' ' + s['triggers'] if s.get('triggers') else ''} · severity: {e['severity']}"
     return c.capitalize(), e["narrative"]
+
+
+def is_structured(text: str) -> bool:
+    """Handoffs and todo check-ins are button-driven workflows: always run them deterministically,
+    even when an LLM is configured, so the UI flow (quick replies, cited handoff card) is reliable."""
+    low = text.lower()
+    return bool(HANDOFF.search(low) or (CHECK.search(low) and not LOGGY.search(low.replace("check", ""))))
 
 
 async def drive(ctx: Ctx, text: str) -> str:

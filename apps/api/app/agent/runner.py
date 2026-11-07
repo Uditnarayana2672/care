@@ -80,6 +80,7 @@ async def run_turn(session: AsyncSession, user: User, memory: MemoryService, *, 
     except PermissionError as e:
         text = f"I can't do that: {e}."
     except LookupError:
+        log.info("patient unresolved → asking", exc_info=True)
         text = rules.ask_patient(ctx, message or "")
     except Exception:  # noqa: BLE001
         log.exception("chat turn failed")
@@ -117,7 +118,7 @@ async def _drive(ctx: Ctx, text: str, session: AsyncSession, user: User) -> str:
         p = rules.resolve_patient(ctx, text)
         if p and len([x for x in ctx.patients.values() if x.full_name.split()[0].lower() in text.lower()]) == 1:
             ctx.active = p
-    if get_settings().groq_api_key:
+    if get_settings().groq_api_key and not rules.is_structured(text):
         hist = []
         rows = list(await session.scalars(select(ChatMessage).where(ChatMessage.user_id == user.id).order_by(ChatMessage.created_at.desc()).limit(8)))
         for r in reversed(rows[1:]):

@@ -11,6 +11,8 @@ const login = async (page: Page, name: string) => {
     await select.selectOption({ label: opts.find((o) => o.includes(name))! });
   }
   await expect(page.getByText(/Signed in as/)).toBeVisible();
+  // wait for the switch to land (the selector shows the new user) before typing
+  await expect(page.getByLabel("Switch demo user").locator("option:checked")).toContainText(name);
   await expect(page.getByLabel("Message")).toBeVisible();
 };
 const say = async (page: Page, text: string) => {

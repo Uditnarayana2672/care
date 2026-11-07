@@ -2,7 +2,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { api, post } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import type { DemoUser, Me } from "@/lib/types";
@@ -84,7 +84,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       </header>
       <main className="wrap">
         {public_ || me.data ? (
-          children
+          // keyed by user: switching demo users remounts the page so no chat/board state leaks across users
+          <Fragment key={me.data?.id ?? "public"}>{children}</Fragment>
         ) : me.isLoading ? (
           <Loading />
         ) : users.isError ? (

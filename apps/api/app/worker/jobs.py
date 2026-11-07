@@ -50,10 +50,17 @@ async def publish_checkins() -> None:
     mem = get_memory()
     async with SessionLocal() as s:
         cutoff = now() - timedelta(minutes=30)
+        # Don't ping about todos that went overdue hours ago (e.g. right after a late-day reseed):
+        # they stay on the board and under "Check in on todos", but a burst of stale nudges is noise.
+        stale = now() - timedelta(hours=3)
         todos = list(await s.scalars(select(Todo).where(Todo.due_date == today(), Todo.status.in_(["todo", "in_progress"]),
                                                         Todo.checkin_sent.is_(False))))
         for t in todos:
-            if at_local(t.due_date, t.due_time) > cutoff:
+            due = at_local(t.due_date, t.due_time)
+            if due > cutoff:
+                continue
+            if due < stale:
+                t.checkin_sent = True
                 continue
             uids = list(await s.scalars(select(Assignment.user_id).where(Assignment.patient_id == t.patient_id, Assignment.active.is_(True))))
             for uid in uids:

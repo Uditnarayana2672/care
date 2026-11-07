@@ -31,8 +31,12 @@ class UpdateTodoStatusArgs(BaseModel):
 class LogCareArgs(BaseModel):
     patient_id: uuid.UUID | None = None
     category: Category
-    structured: dict[str, Any] = Field(default_factory=dict)
-    narrative: str = ""
+    structured: dict[str, Any] = Field(default_factory=dict, description=(
+        "Keys by category. medication: medication_name, status (given|refused|missed), medication_id (from the profile, "
+        "if known), observed_effects. sleep: hours (number), quality (good|fair|poor). diet: meal (breakfast|lunch|dinner|snack), "
+        "portion (full|half|little|none), refused_items. mood: mood (calm|happy|restless|anxious|low|confused), triggers. "
+        "allergy: substance, reaction. Other categories: leave empty."))
+    narrative: str = Field("", description="One plain sentence of what the caretaker observed, in their words.")
     severity: Literal["normal", "watch", "urgent"] = "normal"
     observed_at: datetime | None = None
 
