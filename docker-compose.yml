@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16
+    environment: {POSTGRES_USER: carebridge, POSTGRES_PASSWORD: carebridge, POSTGRES_DB: carebridge}
+    volumes: [pgdata:/var/lib/postgresql/data]
+    ports: ["5432:5432"]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U carebridge"], interval: 3s, retries: 20}
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+  api:
+    build: {context: ./apps/api}
+    env_file: [.env]
+    depends_on: {postgres: {condition: service_healthy}, redis: {condition: service_started}}
+    volumes: ["./seed:/seed:ro"]
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports: ["8000:8000"]
+  worker:
+    build: {context: ./apps/api}
+    env_file: [.env]
+    depends_on: [api]
+    command: python -m app.worker.main
+  web:
+    build: {context: ./apps/web, args: {NEXT_PUBLIC_API_URL: "http://localhost:8000/api/v1"}}
+    depends_on: [api]
+    ports: ["3000:3000"]
+volumes:
+  pgdata:

@@ -1,0 +1,8 @@
+{
+  "organization": {"slug": "demo", "name": "Demo Care Org"},
+  "users": [
+    {"email": "anjali@carebridge.demo", "full_name": "Anjali Sharma", "role": "caretaker"},
+    {"email": "rohan@carebridge.demo", "full_name": "Rohan Kumar", "role": "caretaker"},
+    {"email": "meera@carebridge.demo", "full_name": "Meera Nair", "role": "coordinator"}
+  ]
+}

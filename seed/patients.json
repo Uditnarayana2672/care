@@ -1,0 +1,64 @@
+{
+  "patients": [
+    {
+      "key": "asha", "code": "CB-4821", "full_name": "Asha Rao", "age": 78, "gender": "Female", "preferred_language": "Telugu",
+      "phone": "+91 98450 12345", "address": "14, 3rd Cross, Jayanagar, Bengaluru", "color": "#c2643f",
+      "mobility_level": "Walker for transfers", "diet_type": "Diabetic diet; no sweetened drinks after 5 PM",
+      "conditions": ["Diabetes", "Joint pain"],
+      "contact": {"name": "Kiran Rao", "relation": "Son", "phone": "+91 99000 54321"},
+      "assigned": ["anjali", "rohan"],
+      "medications": [{"name": "Metformin", "strength": "500 mg", "times": ["08:00", "20:00"], "instruction": "With food", "verification": "verified"}],
+      "allergies": [{"substance": "Sulfa drugs", "reaction": "Rash", "verification": "verified"}],
+      "routines": [["wake", "06:30", ""], ["meal", "08:00", "Breakfast"], ["meal", "13:00", "Lunch"], ["walk", "18:30", "Evening walk"], ["meal", "19:30", "Dinner"], ["sleep", "21:30", "Bedtime routine"]],
+      "templates": [
+        {"title": "Morning bath", "category": "hygiene", "source": "routine", "time": "08:00"},
+        {"title": "Lunch · diabetic diet", "category": "meal", "source": "care_plan", "time": "13:00"},
+        {"title": "Assisted evening walk", "category": "mobility", "source": "routine", "time": "18:30", "note": "Use her walker"},
+        {"title": "Bedtime routine", "category": "other", "source": "care_plan", "time": "21:30", "note": "No sweetened drinks after 5 PM"}
+      ]
+    },
+    {
+      "key": "suresh", "code": "CB-5130", "full_name": "Suresh Patel", "age": 85, "gender": "Male", "preferred_language": "Hindi",
+      "phone": "+91 98860 22110", "address": "7, Lake View Road, Indiranagar, Bengaluru", "color": "#1f6f68",
+      "mobility_level": "Walks with a stick", "diet_type": "Vegetarian",
+      "conditions": ["Memory issues"],
+      "contact": {"name": "Neha Patel", "relation": "Daughter", "phone": "+91 98860 33445"},
+      "assigned": ["anjali"],
+      "medications": [{"name": "Donepezil", "strength": "5 mg", "times": ["20:30"], "instruction": "At night", "verification": "verified"}],
+      "allergies": [],
+      "routines": [["wake", "06:45", ""], ["meal", "13:00", "Lunch"], ["sleep", "21:30", "Bedtime routine"]],
+      "templates": [
+        {"title": "Morning walk in garden", "category": "mobility", "source": "routine", "time": "07:30"},
+        {"title": "Serve lunch", "category": "meal", "source": "routine", "time": "13:00"}
+      ]
+    },
+    {
+      "key": "imran", "code": "CB-6204", "full_name": "Imran Khan", "age": 82, "gender": "Male", "preferred_language": "Urdu",
+      "phone": "+91 98440 55667", "address": "21, Frazer Town, Bengaluru", "color": "#b7801b",
+      "mobility_level": "Walker; fall risk", "diet_type": "Soft food",
+      "conditions": ["High BP", "Joint pain"],
+      "contact": {"name": "Sana Khan", "relation": "Daughter", "phone": "+91 98440 77889"},
+      "assigned": [],
+      "medications": [{"name": "Telmisartan", "strength": "40 mg", "times": ["08:00"], "instruction": "", "verification": "verified"}],
+      "allergies": [],
+      "routines": [["wake", "07:00", ""], ["meal", "13:30", "Lunch"]],
+      "templates": [{"title": "Supervised walk with walker", "category": "mobility", "source": "care_plan", "time": "10:00", "note": "Fall risk: stay within arm's reach"}]
+    },
+    {
+      "key": "lakshmi", "code": "CB-7315", "full_name": "Lakshmi Iyer", "age": 80, "gender": "Female", "preferred_language": "Tamil",
+      "phone": "+91 98450 99001", "address": "3, 5th Main, Malleshwaram, Bengaluru", "color": "#5b55a6",
+      "mobility_level": "Walks on her own", "diet_type": "Vegetarian",
+      "conditions": ["High BP"],
+      "contact": {"name": "Ramesh Iyer", "relation": "Son", "phone": "+91 98450 11223"},
+      "assigned": ["anjali"],
+      "medications": [{"name": "Amlodipine", "strength": "5 mg", "times": ["08:00"], "instruction": "", "verification": "pending", "source": "Family enrollment"}],
+      "allergies": [],
+      "routines": [["wake", "06:00", ""], ["meal", "19:30", "Dinner"]],
+      "templates": [
+        {"title": "Encourage fluids · 1 glass", "category": "meal", "source": "care_plan", "time": "13:30"},
+        {"title": "Evening BP check", "category": "vitals", "source": "care_plan", "time": "19:00"},
+        {"title": "Dinner", "category": "meal", "source": "routine", "time": "19:30"}
+      ]
+    }
+  ]
+}

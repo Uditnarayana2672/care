@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareBridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f1ea; --surface:#fffdf9; --surface-2:#f1ebe2; --line:#e4dbcf;
+  --ink:#1f2a2a; --ink-2:#55605f; --ink-3:#8a918f;
+  --teal:#1f6f68; --teal-2:#e2f0ee; --teal-ink:#0f4743;
+  --clay:#c2643f; --clay-2:#fbe9e1;
+  --amber:#b7801b; --amber-2:#fbf1dc;
+  --rose:#b2434b; --rose-2:#f9e3e4;
+  --violet:#5b55a6; --violet-2:#ebeaf7;
+  --shadow:0 1px 2px rgba(31,42,42,.06),0 6px 18px rgba(31,42,42,.06);
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131817; --surface:#1b2120; --surface-2:#222a29; --line:#2f3837;
+    --ink:#eef1ef; --ink-2:#b2bbb8; --ink-3:#7d8885;
+    --teal:#5cc0b5; --teal-2:#1d3532; --teal-ink:#a9e3dc;
+    --clay:#e38b67; --clay-2:#3a261e;
+    --amber:#e2b155; --amber-2:#362c18;
+    --rose:#e57d84; --rose-2:#3a2124;
+    --violet:#a7a2e8; --violet-2:#27264a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131817; --surface:#1b2120; --surface-2:#222a29; --line:#2f3837;
+  --ink:#eef1ef; --ink-2:#b2bbb8; --ink-3:#7d8885;
+  --teal:#5cc0b5; --teal-2:#1d3532; --teal-ink:#a9e3dc;
+  --clay:#e38b67; --clay-2:#3a261e;
+  --amber:#e2b155; --amber-2:#362c18;
+  --rose:#e57d84; --rose-2:#3a2124;
+  --violet:#a7a2e8; --violet-2:#27264a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Instrument Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+.muted{color:var(--ink-2)} .faint{color:var(--ink-3)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1440px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Fraunces",serif;font-size:20px;font-weight:600}
+.mark{width:30px;height:30px;border-radius:9px;background:var(--teal);display:grid;place-items:center;color:#fff}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav button{border:0;background:none;padding:8px 12px;border-radius:10px;color:var(--ink-2);font-weight:500}
+.nav button.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.spacer{flex:1}
+.who{display:flex;align-items:center;gap:8px}
+.who select{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:36px;height:36px;display:grid;place-items:center}
+
+.wrap{max-width:1440px;margin:0 auto;padding:20px 16px 40px}
+.view{display:none} .view.on{display:block}
+
+/* chips, badges, buttons */
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:500}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;letter-spacing:.01em}
+.b-teal{background:var(--teal-2);color:var(--teal-ink)} .b-clay{background:var(--clay-2);color:var(--clay)}
+.b-amber{background:var(--amber-2);color:var(--amber)} .b-rose{background:var(--rose-2);color:var(--rose)}
+.b-violet{background:var(--violet-2);color:var(--violet)} .b-grey{background:var(--surface-2);color:var(--ink-2)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:600}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.ghost{background:transparent}
+.btn:hover{filter:brightness(.97)}
+.mem{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--violet);background:var(--violet-2);padding:2px 8px;border-radius:999px}
+.mem::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.8}
+
+/* dashboard */
+.dash{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:20px;align-items:start}
+@media (max-width:1100px){.dash{grid-template-columns:1fr}}
+.hello{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.hello h1{font-size:28px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px 14px;min-width:96px}
+.stat b{display:block;font-size:20px;font-family:"Fraunces",serif}
+.stat span{font-size:12px;color:var(--ink-2)}
+.alert{display:flex;gap:12px;align-items:flex-start;background:var(--amber-2);border:1px solid color-mix(in srgb,var(--amber) 30%,transparent);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px}
+.alert .dot{width:10px;height:10px;border-radius:50%;background:var(--amber);margin-top:6px;flex:none}
+.alert p{margin:2px 0 0;font-size:13.5px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.board{display:grid;grid-template-columns:repeat(5,minmax(200px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px}
+.col{background:var(--surface-2);border-radius:var(--radius);padding:10px;min-height:340px;display:flex;flex-direction:column;gap:10px}
+.col.drop{outline:2px dashed var(--teal);outline-offset:-4px}
+.col-h{display:flex;justify-content:space-between;align-items:center;font-weight:600;font-size:13px;padding:2px 4px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-2)}
+.col-h .n{background:var(--surface);border-radius:999px;padding:0 8px;font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);cursor:grab;display:flex;flex-direction:column;gap:6px}
+.card:active{cursor:grabbing}
+.card.flash{animation:flash 1.2s ease}
+@keyframes flash{0%{box-shadow:0 0 0 3px var(--teal)}100%{box-shadow:var(--shadow)}}
+.card-top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.pt{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.av{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:700;color:#fff;flex:none}
+.card h4{margin:0;font-size:14.5px;font-weight:600}
+.reason{font-size:12px;color:var(--ink-2);line-height:1.4}
+.time{font-size:12px;font-weight:600;color:var(--ink)}
+
+/* chat */
+.chat{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;height:calc(100vh - 110px);min-height:560px;position:sticky;top:76px}
+@media (max-width:1100px){.chat{position:static;height:680px}}
+.chat-h{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.chat-h h3{font-size:17px}
+.toggle{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.sw{width:40px;height:22px;border-radius:999px;background:var(--teal);position:relative;border:0;padding:0}
+.sw::after{content:"";position:absolute;top:3px;left:21px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.sw.off{background:var(--line)} .sw.off::after{left:3px}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.m{max-width:92%;display:flex;flex-direction:column;gap:6px}
+.m.bot{align-self:flex-start} .m.me{align-self:flex-end;align-items:flex-end}
+.bubble{padding:10px 12px;border-radius:14px;font-size:14px}
+.bot .bubble{background:var(--surface-2);border-top-left-radius:4px}
+.me .bubble{background:var(--teal);color:#fff;border-top-right-radius:4px}
+.qr{display:flex;flex-wrap:wrap;gap:6px}
+.qr button{border:1px solid var(--teal);color:var(--teal);background:transparent;border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.qr button:hover{background:var(--teal-2)}
+.qr.used button{opacity:.45;pointer-events:none}
+.ev{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);display:flex;flex-direction:column;gap:6px;font-size:13px}
+.ev h5{margin:0;font-size:13.5px;font-weight:700}
+.ev ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.ev li{border-left:3px solid var(--violet);padding-left:8px;color:var(--ink-2)}
+.ev li b{color:var(--ink);font-weight:600}
+.ev .note{font-size:11.5px;color:var(--ink-3)}
+.ev.suggest{border-color:color-mix(in srgb,var(--violet) 40%,var(--line))}
+.ev.warn{border-color:color-mix(in srgb,var(--amber) 45%,var(--line))}
+.ev table{width:100%;border-collapse:collapse}
+.ev td{padding:4px 0;border-top:1px solid var(--line);vertical-align:top}
+.ev td:first-child{width:92px;font-weight:600;color:var(--ink)}
+.compose{border-top:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:8px}
+.prompts{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.prompts button{flex:none;border:1px dashed var(--line);background:var(--surface-2);border-radius:999px;padding:5px 10px;font-size:12px;color:var(--ink-2)}
+.in{display:flex;gap:8px}
+.in input{flex:1;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:10px 12px;outline:none}
+.in input:focus{border-color:var(--teal)}
+.typing{display:inline-flex;gap:4px;padding:12px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--ink-3);animation:b 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,100%{opacity:.3}50%{opacity:1}}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.compare > div{border-radius:10px;padding:8px 10px;font-size:12.5px}
+.compare .off{background:var(--surface-2);color:var(--ink-2)}
+.compare .on{background:var(--violet-2)}
+
+/* patient */
+.pat-h{display:flex;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);flex-wrap:wrap}
+.pat-h .av{width:64px;height:64px;font-size:22px}
+.pat-h h1{font-size:28px}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pselect{margin-left:auto}
+.tabs{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.panel h3{font-size:18px;margin-bottom:10px}
+.obs{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.obs-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.obs h4{margin:0 0 4px;font-size:15px}
+.proof{font-family:"Fraunces",serif;font-size:22px;color:var(--violet);line-height:1;text-align:right}
+.proof small{display:block;font-family:"Instrument Sans";font-size:11px;color:var(--ink-3)}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{display:grid;grid-template-columns:88px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.tl li:first-child{border-top:0}
+.tl .t{font-size:12px;color:var(--ink-3);font-weight:600}
+.spark{display:flex;align-items:flex-end;gap:6px;height:90px;margin:8px 0}
+.spark div{flex:1;background:var(--teal-2);border-radius:6px 6px 2px 2px;position:relative}
+.spark div.low{background:var(--amber)}
+.spark div span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10.5px;color:var(--ink-3)}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:6px 12px;font-size:14px}
+.kv dt{color:var(--ink-2)} .kv dd{margin:0}
+
+/* enrollment */
+.enroll{max-width:720px;margin:0 auto}
+.enroll .lead{font-size:19px;color:var(--ink-2);margin:6px 0 20px}
+.steps{display:flex;gap:6px;margin-bottom:20px}
+.steps div{flex:1;height:8px;border-radius:999px;background:var(--line)}
+.steps div.on{background:var(--teal)}
+.estep{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:var(--shadow);display:none}
+.estep.on{display:block}
+.estep h2{font-size:30px;margin-bottom:4px}
+.estep .sub{font-size:17px;color:var(--ink-2);margin-bottom:22px}
+.field{margin-bottom:20px}
+.field label{display:block;font-size:18px;font-weight:600;margin-bottom:8px}
+.field input,.field select{width:100%;font-size:20px;padding:14px 16px;border:2px solid var(--line);border-radius:14px;background:var(--bg);min-height:58px}
+.field input:focus,.field select:focus{outline:none;border-color:var(--teal)}
+.big-chips{display:flex;flex-wrap:wrap;gap:10px}
+.big-chips button{font-size:18px;padding:12px 20px;border-radius:14px;border:2px solid var(--line);background:var(--bg);min-height:56px;font-weight:500}
+.big-chips button.on{border-color:var(--teal);background:var(--teal-2);color:var(--teal-ink);font-weight:700}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:600px){.row2{grid-template-columns:1fr}.estep{padding:20px}}
+.enav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+.enav .btn{font-size:19px;padding:14px 26px;border-radius:14px;min-height:58px}
+.medrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:18px}
+.saved{font-size:14px;color:var(--teal);font-weight:600}
+.done-card{text-align:center;padding:20px 0}
+.done-card .code{font-family:"Fraunces",serif;font-size:40px;letter-spacing:.08em;color:var(--teal);margin:10px 0}
+
+/* coordinator */
+.qtable{width:100%;border-collapse:collapse;font-size:14px}
+.qtable th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);padding:8px;border-bottom:1px solid var(--line)}
+.qtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.act{display:flex;gap:6px}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s;z-index:50}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media (max-width:640px){
+  .board{grid-template-columns:repeat(5,82vw)}
+  .hello h1{font-size:23px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brand"><div class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 15c3-6 6-6 9 0s6 6 9 0"/></svg></div>CareBridge</div>
+    <nav class="nav" id="nav">
+      <button data-view="dashboard" class="on">Today</button>
+      <button data-view="patient">Patients</button>
+      <button data-view="enroll">Enroll</button>
+      <button data-view="coord">Coordinator</button>
+    </nav>
+    <div class="spacer"></div>
+    <div class="who">
+      <span class="faint" style="font-size:13px">Signed in as</span>
+      <select id="who">
+        <option value="anjali">Anjali Sharma · Caretaker</option>
+        <option value="rohan">Rohan Kumar · Caretaker</option>
+        <option value="meera">Meera Nair · Coordinator</option>
+      </select>
+      <button class="icon-btn" id="theme" title="Toggle theme" aria-label="Toggle theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- DASHBOARD -->
+<section class="view on" id="v-dashboard">
+  <div class="dash">
+    <div>
+      <div class="hello">
+        <div>
+          <div class="faint" style="font-size:13px;font-weight:600" id="today-date">Saturday, 7 November</div>
+          <h1 id="greet">Good evening, Anjali</h1>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="st-pat">3</b><span>Patients</span></div>
+          <div class="stat"><b id="st-open">0</b><span>Open todos</span></div>
+          <div class="stat"><b id="st-done">0</b><span>Done</span></div>
+        </div>
+      </div>
+
+      <div class="alert" id="trend-alert">
+        <div class="dot"></div>
+        <div style="flex:1">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b>Asha Rao · sleep shorter than usual</b><span class="badge b-amber">Trend watch</span><span class="mem">3 memories</span></div>
+          <p>About 5 hours on each of the last 3 nights, versus her usual 7. This is an observation, not a diagnosis. Please inform the coordinator.</p>
+        </div>
+        <button class="btn" onclick="ackAlert()">Acknowledge</button>
+      </div>
+
+      <div class="filters" id="filters"></div>
+      <div class="board" id="board"></div>
+    </div>
+
+    <aside class="chat">
+      <div class="chat-h">
+        <div class="mark" style="width:28px;height:28px;border-radius:8px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 15c3-6 6-6 9 0s6 6 9 0"/></svg></div>
+        <div><h3>Ask CareBridge</h3><div class="faint" style="font-size:12px">Logs, todos and handoffs, remembered</div></div>
+        <div class="toggle">Memory <button class="sw" id="memsw" aria-label="Toggle memory"></button></div>
+      </div>
+      <div class="msgs" id="msgs"></div>
+      <div class="compose">
+        <div class="prompts" id="prompts"></div>
+        <form class="in" id="form">
+          <input id="inp" placeholder="Log care or ask about a patient…" autocomplete="off">
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- PATIENT -->
+<section class="view" id="v-patient">
+  <div class="pat-h">
+    <div class="av" style="background:#c2643f">AR</div>
+    <div>
+      <h1>Mrs. Asha Rao</h1>
+      <div class="muted">78 · Female · Prefers Telugu · Patient code CB-4821</div>
+      <div class="facts">
+        <span class="badge b-teal">Walker for transfers</span>
+        <span class="badge b-grey">Diabetic diet</span>
+        <span class="badge b-rose">Allergy: sulfa drugs · verified</span>
+        <span class="badge b-amber">Rash after new soap · pending</span>
+      </div>
+    </div>
+    <div class="pselect"><select class="btn"><option>Asha Rao</option><option>Suresh Patel</option><option>Lakshmi Iyer</option></select></div>
+  </div>
+
+  <div class="tabs" id="ptabs">
+    <button class="chip on" data-t="memory">Memory</button>
+    <button class="chip" data-t="today">Today</button>
+    <button class="chip" data-t="timeline">Timeline</button>
+    <button class="chip" data-t="trends">Trends</button>
+  </div>
+
+  <div id="pt-memory" class="ptab grid2">
+    <div class="panel">
+      <h3>Observed patterns</h3>
+      <p class="faint" style="margin-top:-4px;font-size:13px">Consolidated by Hindsight from caretaker logs. Not clinical instructions.</p>
+      <div class="obs">
+        <div class="obs-top"><div><h4>An assisted evening walk calms her when restless</h4><span class="badge b-violet">What helps</span></div><div class="proof">3<small>times</small></div></div>
+        <div class="ev" style="margin-top:8px;border:0;padding:0"><ul>
+          <li><b>6 Nov · Anjali</b> — restless after dinner, 10-min walk, slept through</li>
+          <li><b>4 Nov · Anjali</b> — anxious before bed, short walk, calmer</li>
+          <li><b>2 Nov · Rohan</b> — restless, supported walk, mood improved</li>
+        </ul></div>
+      </div>
+      <div class="obs">
+        <div class="obs-top"><div><h4>Refuses morning baths; says she feels cold</h4><span class="badge b-clay">Why todos fail</span></div><div class="proof">3<small>times</small></div></div>
+        <div class="ev" style="margin-top:8px;border:0;padding:0"><ul>
+          <li><b>7 Nov · Anjali</b> — refused at 8:10, "too cold"</li>
+          <li><b>6 Nov · Anjali</b> — refused, asked for later</li>
+          <li><b>4 Nov · Rohan</b> — refused, said water felt cold</li>
+          <li><b>5 Nov · Rohan</b> — <i>succeeded at 1:30 PM</i></li>
+        </ul></div>
+      </div>
+      <div class="obs">
+        <div class="obs-top"><div><h4>Takes metformin better with warm water and breakfast</h4><span class="badge b-teal">Routine</span></div><div class="proof">2<small>times</small></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Recent memories</h3>
+      <p class="faint" style="margin-top:-4px;font-size:13px">Every entry is linked to its source log.</p>
+      <ul class="tl">
+        <li><span class="t">7 Nov 08:10</span><div>Morning bath marked <b>not done</b> by Anjali. Reason: refused, feels cold. <span class="mem">todo_outcome</span></div></li>
+        <li><span class="t">6 Nov 21:40</span><div>Slept about 5 hours, woke twice. Reported by Anjali. <span class="mem">sleep</span></div></li>
+        <li><span class="t">6 Nov 20:15</span><div>Ate half portion of dinner, refused curd. <span class="mem">diet</span></div></li>
+        <li><span class="t">6 Nov 18:30</span><div>Restless after dinner; 10-min assisted walk; calmed and slept. <span class="mem">intervention_outcome</span></div></li>
+        <li><span class="t">6 Nov 08:00</span><div>Metformin given with breakfast; mild nausea ~30 min, settled with rest. <span class="mem">medication_effect</span></div></li>
+        <li><span class="t">3 Nov 10:20</span><div>Rohan reported a rash after a new soap. Pending verification. <span class="mem">allergy_report</span></div></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="pt-today" class="ptab panel" style="display:none">
+    <h3>Today for Asha</h3>
+    <dl class="kv">
+      <dt>08:00</dt><dd>Metformin 500 mg with breakfast · <span class="badge b-teal">done</span></dd>
+      <dt>08:00</dt><dd>Morning bath · <span class="badge b-rose">not done</span> <span class="mem">reschedule proposed</span></dd>
+      <dt>13:00</dt><dd>Lunch, diabetic diet</dd>
+      <dt>18:30</dt><dd>Assisted evening walk <span class="mem">observed pattern</span></dd>
+      <dt>20:00</dt><dd>Metformin 500 mg with dinner</dd>
+      <dt>21:30</dt><dd>Bedtime routine, no sweetened drinks after 5 PM</dd>
+    </dl>
+  </div>
+
+  <div id="pt-timeline" class="ptab panel" style="display:none">
+    <h3>Timeline</h3>
+    <ul class="tl">
+      <li><span class="t">7 Nov</span><div>Bath refused (3rd morning). Reschedule suggested.</div></li>
+      <li><span class="t">6 Nov</span><div>Short sleep, half dinner, evening walk helped. Logged by Anjali.</div></li>
+      <li><span class="t">5 Nov</span><div>Bath done at 1:30 PM. Logged by Rohan.</div></li>
+      <li><span class="t">4 Nov</span><div>Anxious before bed; walk helped. Bath refused.</div></li>
+      <li><span class="t">3 Nov</span><div>Rash after new soap reported; sent for verification.</div></li>
+      <li><span class="t">2 Nov</span><div>Restless after dinner; supported walk; slept well.</div></li>
+    </ul>
+  </div>
+
+  <div id="pt-trends" class="ptab grid2" style="display:none">
+    <div class="panel">
+      <h3>Sleep, last 7 nights</h3>
+      <div class="spark">
+        <div style="height:78%"><span>1</span></div><div style="height:74%"><span>2</span></div><div style="height:80%"><span>3</span></div><div style="height:76%"><span>4</span></div>
+        <div class="low" style="height:52%"><span>5</span></div><div class="low" style="height:55%"><span>6</span></div><div class="low" style="height:50%"><span>7</span></div>
+      </div>
+      <p class="muted" style="margin-top:26px;font-size:13.5px">Last 3 nights about 5h versus a 14-day baseline of about 7h. Observation only — inform the coordinator.</p>
+    </div>
+    <div class="panel">
+      <h3>Dinner portions, last 7 days</h3>
+      <div class="spark">
+        <div style="height:90%"><span>1</span></div><div style="height:90%"><span>2</span></div><div style="height:85%"><span>3</span></div><div style="height:90%"><span>4</span></div>
+        <div style="height:80%"><span>5</span></div><div class="low" style="height:50%"><span>6</span></div><div style="height:85%"><span>7</span></div>
+      </div>
+      <p class="muted" style="margin-top:26px;font-size:13.5px">No trend alert. One half portion on day 6.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ENROLL -->
+<section class="view" id="v-enroll">
+  <div class="enroll">
+    <h1 style="font-size:34px">Join CareBridge</h1>
+    <p class="lead">Five short steps. You can stop any time — we save as you go.</p>
+    <div class="steps" id="esteps"><div class="on"></div><div></div><div></div><div></div><div></div></div>
+
+    <div class="estep on" data-s="1">
+      <h2>About you</h2><div class="sub">Step 1 of 5</div>
+      <div class="field"><label for="e-name">Your full name</label><input id="e-name" value="Asha Rao"></div>
+      <div class="row2">
+        <div class="field"><label for="e-age">Age</label><input id="e-age" inputmode="numeric" value="78"></div>
+        <div class="field"><label for="e-lang">Language you prefer</label><select id="e-lang"><option>Telugu</option><option>Hindi</option><option>English</option><option>Kannada</option><option>Tamil</option></select></div>
+      </div>
+      <div class="field"><label>Gender</label><div class="big-chips" data-single><button class="on">Female</button><button>Male</button><button>Prefer not to say</button></div></div>
+    </div>
+
+    <div class="estep" data-s="2">
+      <h2>How to reach you</h2><div class="sub">Step 2 of 5</div>
+      <div class="field"><label for="e-phone">Phone number</label><input id="e-phone" inputmode="tel" value="+91 98450 12345"></div>
+      <div class="field"><label for="e-addr">Home address</label><input id="e-addr" value="14, 3rd Cross, Jayanagar, Bengaluru"></div>
+      <div class="row2">
+        <div class="field"><label for="e-ec">Emergency contact</label><input id="e-ec" value="Kiran Rao (son)"></div>
+        <div class="field"><label for="e-ecp">Their phone</label><input id="e-ecp" inputmode="tel" value="+91 99000 54321"></div>
+      </div>
+    </div>
+
+    <div class="estep" data-s="3">
+      <h2>Your health</h2><div class="sub">Step 3 of 5 · tap all that apply</div>
+      <div class="field"><label>Health conditions</label><div class="big-chips"><button class="on">Diabetes</button><button>High BP</button><button>Heart</button><button class="on">Joint pain</button><button>Memory issues</button><button>Breathing</button><button>Other</button></div></div>
+      <div class="field"><label>How do you walk?</label><div class="big-chips" data-single><button>On my own</button><button>With a stick</button><button class="on">With a walker</button><button>Wheelchair</button></div></div>
+      <div class="field"><label>Food</label><div class="big-chips"><button class="on">Vegetarian</button><button>Non-veg</button><button class="on">Diabetic</button><button>Soft food</button></div></div>
+    </div>
+
+    <div class="estep" data-s="4">
+      <h2>Medicines & allergies</h2><div class="sub">Step 4 of 5 · a coordinator will check these before they are used</div>
+      <div class="medrow"><div><b>Metformin 500 mg</b><div class="muted" style="font-size:15px">Morning · Night</div></div><button class="btn ghost" aria-label="Remove">✕</button></div>
+      <div class="field"><label for="e-med">Add a medicine</label><input id="e-med" placeholder="Name as on the strip"></div>
+      <div class="field"><label>When do you take it?</label><div class="big-chips"><button>Morning</button><button>Afternoon</button><button>Night</button></div></div>
+      <div class="field"><label for="e-all">Allergies</label><input id="e-all" value="Sulfa drugs"></div>
+    </div>
+
+    <div class="estep" data-s="5">
+      <h2>Your day</h2><div class="sub">Step 5 of 5 · helps carers fit your routine</div>
+      <div class="row2">
+        <div class="field"><label for="e-wake">Wake up</label><input id="e-wake" type="time" value="06:30"></div>
+        <div class="field"><label for="e-sleep">Sleep</label><input id="e-sleep" type="time" value="21:30"></div>
+      </div>
+      <div class="field"><label>Things you enjoy</label><div class="big-chips"><button class="on">Evening walk</button><button class="on">Prayer</button><button>TV</button><button class="on">Music</button><button>Talking to family</button></div></div>
+    </div>
+
+    <div class="estep" data-s="6">
+      <div class="done-card">
+        <h2>You're enrolled</h2>
+        <div class="sub">Your carer will use this to look after you.</div>
+        <div class="code">CB-4821</div>
+        <div class="muted" style="font-size:17px">Your care memory has been created. Medicines will be checked by a coordinator.</div>
+      </div>
+    </div>
+
+    <div class="enav">
+      <button class="btn" id="eback">Back</button>
+      <span class="saved" id="esaved">Saved</span>
+      <button class="btn primary" id="enext">Next</button>
+    </div>
+  </div>
+</section>
+
+<!-- COORDINATOR -->
+<section class="view" id="v-coord">
+  <h1 style="font-size:28px;margin-bottom:14px">Coordinator</h1>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Verify medical data</h3>
+      <table class="qtable"><thead><tr><th>Patient</th><th>Item</th><th>Source</th><th></th></tr></thead>
+      <tbody id="vq">
+        <tr><td>Asha Rao</td><td>Rash after new soap</td><td>Rohan · chat log</td><td class="act"><button class="btn primary" onclick="verify(this)">Verify</button><button class="btn" onclick="verify(this)">Reject</button></td></tr>
+        <tr><td>Asha Rao</td><td>Metformin 500 mg · morning, night</td><td>Self-enrollment</td><td class="act"><button class="btn primary" onclick="verify(this)">Verify</button><button class="btn" onclick="verify(this)">Reject</button></td></tr>
+        <tr><td>Lakshmi Iyer</td><td>Amlodipine 5 mg · morning</td><td>Family enrollment</td><td class="act"><button class="btn primary" onclick="verify(this)">Verify</button><button class="btn" onclick="verify(this)">Reject</button></td></tr>
+      </tbody></table>
+    </div>
+    <div class="panel">
+      <h3>Escalations</h3>
+      <div class="ev warn" style="margin-bottom:10px"><h5>Asha Rao · shorter sleep 3 nights</h5><div class="muted">≈5h vs ≈7h baseline. Raised by trend watch. Anjali acknowledged 18:02.</div><div class="act"><button class="btn">Call family</button><button class="btn primary">Mark resolved</button></div></div>
+      <div class="ev warn"><h5>Lakshmi Iyer · reduced dinner intake</h5><div class="muted">Half portion or less on 4 of the last 5 days.</div><div class="act"><button class="btn">Call family</button><button class="btn primary">Mark resolved</button></div></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- data ---------- */
+const PATIENTS={
+  asha:{name:"Asha Rao",ini:"AR",color:"#c2643f"},
+  suresh:{name:"Suresh Patel",ini:"SP",color:"#1f6f68"},
+  lakshmi:{name:"Lakshmi Iyer",ini:"LI",color:"#5b55a6"},
+};
+const COLS=[["now","Now"],["next","Next"],["later","Later"],["done","Done"],["not_done","Not done"]];
+let todos=[
+  {id:1,p:"suresh",t:"Serve lunch",time:"1:00 PM",cat:"Meal",col:"now",reason:"First: gets anxious if lunch is late",mem:"observed 4×"},
+  {id:2,p:"asha",t:"Morning bath",time:"8:00 AM",cat:"Hygiene",col:"now",reason:"Overdue · check in pending"},
+  {id:3,p:"lakshmi",t:"Encourage fluids · 1 glass",time:"1:30 PM",cat:"Diet",col:"now",reason:"Open alert: reduced intake",mem:"trend"},
+  {id:4,p:"asha",t:"Assisted evening walk",time:"6:30 PM",cat:"Mobility",col:"next",reason:"Helps her settle before bed",mem:"observed 3×"},
+  {id:5,p:"suresh",t:"Donepezil · night",time:"8:30 PM",cat:"Medication",col:"later",reason:"Verified medication order"},
+  {id:6,p:"asha",t:"Metformin 500 mg · dinner",time:"8:00 PM",cat:"Medication",col:"later",reason:"Verified · give with warm water",mem:"routine"},
+  {id:7,p:"lakshmi",t:"Evening BP check",time:"7:00 PM",cat:"Vitals",col:"next",reason:"Care plan item"},
+  {id:8,p:"asha",t:"Metformin 500 mg · breakfast",time:"8:00 AM",cat:"Medication",col:"done",reason:"Given by Anjali at 8:05"},
+  {id:9,p:"suresh",t:"Morning walk in garden",time:"7:30 AM",cat:"Mobility",col:"done",reason:"Done · 15 min"},
+];
+const catBadge={Medication:"b-teal",Meal:"b-clay",Diet:"b-clay",Hygiene:"b-grey",Mobility:"b-violet",Vitals:"b-amber"};
+let filter="all", memoryOn=true, user="anjali";
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("show");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("show"),2200)}
+function av(p){const x=PATIENTS[p];return `<span class="av" style="background:${x.color}">${x.ini}</span>`}
+
+/* ---------- nav / theme ---------- */
+$$("#nav button").forEach(b=>b.onclick=()=>{ $$("#nav button").forEach(x=>x.classList.toggle("on",x===b)); $$(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+b.dataset.view)); window.scrollTo(0,0)});
+$("#theme").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("cb-theme",r.dataset.theme)}catch(e){}};
+try{const t=localStorage.getItem("cb-theme");if(t)document.documentElement.dataset.theme=t}catch(e){}
+
+/* ---------- board ---------- */
+function renderFilters(){
+  const ids=user==="rohan"?["asha"]:Object.keys(PATIENTS);
+  $("#filters").innerHTML=[`<button class="chip ${filter==="all"?"on":""}" data-f="all">All patients</button>`]
+    .concat(ids.map(p=>`<button class="chip ${filter===p?"on":""}" data-f="${p}">${av(p)}${PATIENTS[p].name}</button>`)).join("");
+  $$("#filters button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;renderFilters();renderBoard()});
+}
+function renderBoard(flashId){
+  const allowed=user==="rohan"?["asha"]:Object.keys(PATIENTS);
+  const list=todos.filter(t=>allowed.includes(t.p)&&(filter==="all"||t.p===filter));
+  $("#board").innerHTML=COLS.map(([k,l])=>{
+    const items=list.filter(t=>t.col===k);
+    return `<div class="col" data-col="${k}"><div class="col-h"><span>${l}</span><span class="n">${items.length}</span></div>
+      ${items.map(t=>`<div class="card ${t.id===flashId?"flash":""}" draggable="true" data-id="${t.id}">
+        <div class="card-top"><span class="pt">${av(t.p)}${PATIENTS[t.p].name}</span><span class="time">${t.time}</span></div>
+        <h4>${t.t}</h4>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span class="badge ${catBadge[t.cat]||"b-grey"}">${t.cat}</span>${t.mem?`<span class="mem">${t.mem}</span>`:""}</div>
+        <div class="reason">${t.reason}</div></div>`).join("")}</div>`}).join("");
+  const open=list.filter(t=>!["done","not_done"].includes(t.col)).length;
+  $("#st-open").textContent=open; $("#st-done").textContent=list.filter(t=>t.col==="done").length;
+  $("#st-pat").textContent=allowed.length;
+  $$(".card").forEach(c=>c.ondragstart=e=>e.dataTransfer.setData("id",c.dataset.id));
+  $$(".col").forEach(c=>{
+    c.ondragover=e=>{e.preventDefault();c.classList.add("drop")};
+    c.ondragleave=()=>c.classList.remove("drop");
+    c.ondrop=e=>{e.preventDefault();c.classList.remove("drop");const t=todos.find(x=>x.id==e.dataTransfer.getData("id"));if(!t)return;
+      if(c.dataset.col==="not_done"){askReason(t);return}
+      t.col=c.dataset.col; if(t.col==="done")t.reason=`Done by ${user==="rohan"?"Rohan":"Anjali"} · saved to memory`; renderBoard(t.id); toast("Status saved and retained to memory")};
+  });
+}
+function askReason(t){
+  bot(`Why wasn't <b>${t.t}</b> for ${PATIENTS[t.p].name} done?`,{qr:["Refused","Asleep","Unwell","No time","Other"].map(r=>[r,()=>{t.col="not_done";t.reason=`Not done: ${r.toLowerCase()}`;renderBoard(t.id);me(r);bot(`Saved. I'll remember this for ${PATIENTS[t.p].name.split(" ")[0]}.`,{mem:["todo_outcome · just now"]})}])});
+}
+function ackAlert(){const a=$("#trend-alert");a.style.opacity=".55";a.querySelector("button").textContent="Acknowledged";a.querySelector("button").disabled=true;toast("Coordinator notified")}
+
+/* ---------- chat ---------- */
+function scroll(){const m=$("#msgs");m.scrollTop=m.scrollHeight}
+function me(t){$("#msgs").insertAdjacentHTML("beforeend",`<div class="m me"><div class="bubble">${t}</div></div>`);scroll()}
+function bot(html,o={}){
+  const id="m"+Math.random().toString(36).slice(2,8);
+  let h=`<div class="m bot" id="${id}"><div class="bubble">${html}</div>`;
+  if(o.card)h+=o.card;
+  if(o.mem&&memoryOn)h+=`<div style="display:flex;gap:6px;flex-wrap:wrap">${o.mem.map(x=>`<span class="mem">${x}</span>`).join("")}</div>`;
+  if(o.qr)h+=`<div class="qr">${o.qr.map((q,i)=>`<button data-i="${i}">${q[0]}</button>`).join("")}</div>`;
+  h+=`</div>`;
+  $("#msgs").insertAdjacentHTML("beforeend",h);
+  if(o.qr){const box=$("#"+id+" .qr");box.querySelectorAll("button").forEach(b=>b.onclick=()=>{box.classList.add("used");o.qr[b.dataset.i][1]()})}
+  scroll();
+}
+function think(fn,ms=700){$("#msgs").insertAdjacentHTML("beforeend",`<div class="m bot" id="typing"><div class="bubble typing"><i></i><i></i><i></i></div></div>`);scroll();setTimeout(()=>{$("#typing")?.remove();fn()},ms)}
+
+function ev(cls,title,items,note){return `<div class="ev ${cls}"><h5>${title}</h5><ul>${items.map(i=>`<li><b>${i[0]}</b> — ${i[1]}</li>`).join("")}</ul>${note?`<div class="note">${note}</div>`:""}</div>`}
+
+function bathCheckin(){
+  bot(`Was <b>Asha's morning bath</b> (8:00 AM) done?`,{qr:[
+    ["Completed",()=>{me("Completed");setTodo(2,"done","Done · saved to memory");think(()=>bot("Marked done and saved to Asha's memory.",{mem:["todo_outcome"]}))}],
+    ["Not done",()=>{me("Not done");think(()=>bot("What happened?",{qr:[
+      ["Refused",()=>{me("Refused — said she feels cold");bathRefused()}],["Asleep",()=>{me("Asleep");setTodo(2,"not_done","Not done: asleep");bot("Saved.",{mem:["todo_outcome"]})}],
+      ["Unwell",()=>{me("Unwell");setTodo(2,"not_done","Not done: unwell");bot("Saved. If she seems unwell, please follow her care plan and inform the coordinator.",{mem:["todo_outcome"]})}],
+      ["No time",()=>{me("No time");setTodo(2,"next","Moved: no time earlier");bot("Moved to Next.")}]
+    ]}),500)}],
+    ["Skipped",()=>{me("Skipped");setTodo(2,"not_done","Skipped");bot("Skipped and saved.",{mem:["todo_outcome"]})}]
+  ]});
+}
+function bathRefused(){
+  setTodo(2,"not_done","Not done: refused, feels cold");
+  think(()=>{
+    if(!memoryOn){bot("Saved as not done.");return}
+    bot("Saved. This is the <b>3rd morning</b> Asha has refused her bath, each time saying she feels cold.",{
+      mem:["3 memories","1 success at 1:30 PM"],
+      card:ev("suggest","Move Asha's bath to 1:30 PM?",[["7 Nov · Anjali","refused at 8:10, feels cold"],["6 Nov · Anjali","refused, asked for later"],["4 Nov · Rohan","refused, water felt cold"],["5 Nov · Rohan","done at 1:30 PM without fuss"]],"Learned from why this todo keeps failing. You decide."),
+      qr:[["Yes, move to 1:30 PM",()=>{me("Yes, move it");const t=todos.find(x=>x.id===2);t.col="next";t.time="1:30 PM";t.reason="Rescheduled: mornings feel cold";t.mem="learned";renderBoard(2);bot("Done. From tomorrow, Asha's bath is at 1:30 PM. I've remembered why.",{mem:["decision retained"]})}],
+          ["Keep mornings",()=>{me("Keep mornings");bot("Okay, keeping 8:00 AM. I'll keep track of how it goes.")}]]
+    });
+  },900);
+}
+function setTodo(id,col,reason){const t=todos.find(x=>x.id===id);t.col=col;t.reason=reason;renderBoard(id)}
+
+function restless(){
+  think(()=>{
+    bot("Here's what I'll save for <b>Asha</b>:",{card:`<div class="ev"><table><tr><td>Mood</td><td>Restless after dinner · severity: watch</td></tr><tr><td>Time</td><td>Today, 7:40 PM</td></tr><tr><td>By</td><td>${user==="rohan"?"Rohan":"Anjali"}</td></tr></table></div>`,
+      qr:[["Save",()=>{me("Save");think(()=>{
+        if(!memoryOn){bot("Saved. Follow her care plan, and contact the coordinator if you're worried.");return}
+        bot("Saved. Something that has helped before:",{mem:["observation · 3 supporting"],
+          card:ev("suggest","Offer a 10-minute assisted evening walk",[["6 Nov · Anjali","restless after dinner → walk → slept through"],["4 Nov · Anjali","anxious before bed → walk → calmer"],["2 Nov · Rohan","restless → supported walk → mood improved"]],"Observed pattern — not a clinical instruction. Use her walker."),
+          qr:[["Try it",()=>{me("Try it");setTodo(4,"now","Started now · because she's restless");bot("Moved the walk to Now. Tell me how it goes and I'll remember the outcome.")}],["Not now",()=>{me("Not now");bot("Okay.")}]]})})}],
+          ["Edit",()=>{me("Edit");bot("Tell me what to change.")}]]});
+  });
+}
+function multiLog(){
+  think(()=>{
+    bot("I found <b>3 entries</b> for Asha. Save them?",{card:`<div class="ev"><table>
+      <tr><td>Medication</td><td>Metformin 500 mg · given 8:00 AM · observed: mild nausea ~30 min</td></tr>
+      <tr><td>Sleep</td><td>Last night ≈5 h · quality poor</td></tr>
+      <tr><td>Diet</td><td>Dinner · half portion</td></tr></table>
+      <div class="note">I record what you observed. I can't advise on doses.</div></div>`,
+      qr:[["Save all",()=>{me("Save all");setTodo(8,"done","Given 8:00 · nausea noted");think(()=>bot("Saved 3 entries to Asha's record and memory. Her sleep has been short for <b>3 nights in a row</b> — I've flagged it for the coordinator.",{mem:["3 retained","trend watch"]}))}],["Edit",()=>{me("Edit");bot("Which entry should I change?")}]]});
+  },900);
+}
+function handoff(){
+  think(()=>{
+    if(!memoryOn){bot("I don't have any history for Asha beyond her profile. Please check her care plan and ask the previous caretaker.");return}
+    bot("Here's Asha for tonight. Care plan first, then what previous caretakers observed:",{mem:["reflect · 9 memories cited"],
+      card:`<div class="ev"><table>
+        <tr><td>Care plan</td><td>Walker for all transfers. Diabetic diet; no sweetened drinks after 5 PM.</td></tr>
+        <tr><td>Medicine</td><td>Metformin 500 mg at 8:00 PM with dinner (verified). Takes it better with warm water — <i>Anjali, 2×</i>.</td></tr>
+        <tr><td>Watch</td><td>Sleep ≈5 h for 3 nights. Coordinator informed — <i>trend watch, 7 Nov</i>.</td></tr>
+        <tr><td>What helps</td><td>A 10-min assisted walk if restless after dinner — <i>3 times, Anjali &amp; you</i>.</td></tr>
+        <tr><td>Changed</td><td>Bath moved to 1:30 PM from tomorrow; mornings feel cold — <i>Anjali, 7 Nov</i>.</td></tr>
+        <tr><td>Open</td><td>Rash after new soap: pending coordinator check. Use her old soap.</td></tr></table>
+        <div class="note">Learned context is not a clinical instruction. Follow the care plan.</div></div>`,
+      qr:[["Does she take her night tablet easily?",()=>{me("Does she take her night tablet easily?");think(()=>bot("Mostly yes. Twice she took it more easily with warm water after dinner (Anjali, 4 Nov and 6 Nov). No refusals logged this week.",{mem:["2 memories"]}))}],["Who usually helps her sleep?",()=>{me("Who usually helps her sleep?");think(()=>bot("Not enough information to say. Nobody has logged a sleep routine beyond the evening walk. You could ask Anjali, or log what works tonight.",{mem:["0 strong matches"]}))}]]});
+  },1100);
+}
+
+const PROMPTS=[
+  ["Asha restless after dinner",restless,"Asha is restless after dinner"],
+  ["Log meds, sleep, diet",multiLog,"Gave Asha metformin at 8 with breakfast, she felt nauseous for half an hour. Slept only 5 hours. Ate half her dinner."],
+  ["Taking over Asha tonight",handoff,"I'm taking over Asha tonight. What should I know?"],
+  ["Check in on todos",()=>bathCheckin(),"Any todos to check?"],
+];
+function renderPrompts(){$("#prompts").innerHTML=PROMPTS.map((p,i)=>`<button data-i="${i}">${p[0]}</button>`).join("");$$("#prompts button").forEach(b=>b.onclick=()=>{const p=PROMPTS[b.dataset.i];me(p[2]);if(p[1]===bathCheckin||p[0].startsWith("Check"))think(bathCheckin,400);else p[1]()})}
+$("#form").onsubmit=e=>{e.preventDefault();const v=$("#inp").value.trim();if(!v)return;$("#inp").value="";me(v);const s=v.toLowerCase();
+  if(/taking over|handover|hand over|what should i know|need to know/.test(s))handoff();
+  else if(/restless|anxious|agitated/.test(s))restless();
+  else if(/gave|slept|ate|dinner|breakfast|tablet/.test(s))multiLog();
+  else if(/todo|check|bath/.test(s))think(bathCheckin,400);
+  else if(/dose|increase|decrease|how much/.test(s))think(()=>bot("I can't advise on medicine doses. Please follow the prescription and contact the coordinator or doctor."));
+  else think(()=>bot("Got it. Which patient is this about?",{qr:Object.keys(PATIENTS).map(p=>[PATIENTS[p].name,()=>{me(PATIENTS[p].name);bot(`Saved as an observation for ${PATIENTS[p].name}.`,{mem:["observation"]})}])}));
+};
+$("#memsw").onclick=()=>{memoryOn=!memoryOn;$("#memsw").classList.toggle("off",!memoryOn);
+  bot(memoryOn?"Memory is <b>on</b>. I'll use what previous caretakers logged.":"Memory is <b>off</b>. I'll answer like an agent with no history — try asking about a handover.");};
+
+function startChat(){
+  $("#msgs").innerHTML="";
+  if(user==="rohan"){
+    bot("Hi Rohan. You're taking over <b>Asha Rao</b> tonight from Anjali. Want a handoff briefing?",{qr:[["Yes, brief me",()=>{me("Yes, brief me");handoff()}]]});
+  }else{
+    bot("Good evening, Anjali. You have <b>3 patients</b> today. I've ordered your board using what I know about each of them.",{mem:["routine-and-timing · 3 patients"]});
+    setTimeout(bathCheckin,500);
+  }
+}
+
+/* ---------- user switch ---------- */
+$("#who").onchange=e=>{user=e.target.value;
+  if(user==="meera"){$$("#nav button").find(b=>b.dataset.view==="coord").click();return}
+  $("#greet").textContent=`Good evening, ${user==="rohan"?"Rohan":"Anjali"}`;filter="all";renderFilters();renderBoard();startChat();
+  $$("#nav button").find(b=>b.dataset.view==="dashboard").click();
+};
+
+/* ---------- patient tabs ---------- */
+$$("#ptabs button").forEach(b=>b.onclick=()=>{$$("#ptabs button").forEach(x=>x.classList.toggle("on",x===b));$$(".ptab").forEach(p=>p.style.display=p.id==="pt-"+b.dataset.t?"":"none")});
+
+/* ---------- enrollment ---------- */
+let es=1;
+function showStep(){$$(".estep").forEach(s=>s.classList.toggle("on",+s.dataset.s===es));$$("#esteps div").forEach((d,i)=>d.classList.toggle("on",i<es));
+  $("#eback").style.visibility=es>1&&es<6?"visible":"hidden";$("#enext").textContent=es===5?"Finish":es===6?"Enroll another":"Next";$("#esaved").style.visibility=es<6?"visible":"hidden";window.scrollTo(0,0)}
+$("#enext").onclick=()=>{if(es===6){es=1}else es++;showStep();if(es===6)toast("Patient created · care memory ready")};
+$("#eback").onclick=()=>{es=Math.max(1,es-1);showStep()};
+$$(".big-chips").forEach(g=>g.querySelectorAll("button").forEach(b=>b.onclick=()=>{if(g.hasAttribute("data-single"))g.querySelectorAll("button").forEach(x=>x.classList.remove("on"));b.classList.toggle("on")}));
+$$("#v-enroll input").forEach(i=>i.oninput=()=>{$("#esaved").textContent="Saving…";clearTimeout(i._t);i._t=setTimeout(()=>$("#esaved").textContent="Saved",600)});
+showStep();
+
+/* ---------- coordinator ---------- */
+function verify(b){const row=b.closest("tr");row.style.opacity=".4";row.querySelector(".act").innerHTML=`<span class="badge ${b.textContent==="Verify"?"b-teal":"b-rose"}">${b.textContent==="Verify"?"Verified":"Rejected"}</span>`;toast("Saved · todos will update")}
+
+/* ---------- init ---------- */
+renderFilters();renderBoard();renderPrompts();startChat();
+</script>
+</body>
+</html>

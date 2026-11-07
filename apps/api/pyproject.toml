@@ -1,0 +1,31 @@
+[project]
+name = "carebridge-api"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115", "uvicorn[standard]>=0.30", "sqlalchemy[asyncio]>=2.0.30",
+  "aiosqlite>=0.20", "asyncpg>=0.29", "alembic>=1.13", "pydantic>=2.7",
+  "pydantic-settings>=2.3", "pyjwt>=2.8", "httpx>=0.27", "openai>=1.40",
+  "hindsight-client>=0.4", "apscheduler>=3.10", "redis>=5.0", "tzdata",
+]
+[dependency-groups]
+dev = ["pytest>=8", "pytest-asyncio>=0.23", "ruff>=0.5", "mypy>=1.10"]
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+asyncio_mode = "auto"
+markers = ["live: hits Hindsight Cloud (opt-in)"]
+pythonpath = ["."]
+addopts = "-m 'not live'"
+[tool.ruff]
+line-length = 110
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["B008", "E501", "E741", "B904", "B905", "UP042"]
+
+[tool.ruff.lint.per-file-ignores]
+"migrations/*" = ["E402", "I001", "UP"]
+[tool.mypy]
+ignore_missing_imports = true
+# SQLAlchemy Optional columns / dynamic model unions produce noise; runtime behaviour is covered by tests
+disable_error_code = ["attr-defined", "arg-type", "call-overload", "assignment"]
